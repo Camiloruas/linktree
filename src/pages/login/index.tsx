@@ -1,16 +1,37 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../../components/input";
 import { useState, type FormEvent } from "react";
+
+import { auth } from "../../services/firebaseConnections";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  function handleSubmit(e: FormEvent) {
+  const navigate = useNavigate();
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    console.log({
-      email: email,
-      password: password,
-    });
+
+    if (email === "" || password === "") {
+      alert("Preencha seu e-mail e senha");
+      return;
+    }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      navigate("/admin/social");
+      console.log("Login realizado com sucesso!", userCredential.user);
+    } catch (error: any) {
+      console.error("Erro ao fazer login:", error.message);
+
+      if (error.code === "auth/invalid-credential") {
+        alert("E-mail ou senha inválidos.");
+      }
+
+      if (error.code === "auth/too-many-requests") {
+        alert("Muitas tentativas. Tente novamente mais tarde.");
+      }
+    }
   }
 
   return (
