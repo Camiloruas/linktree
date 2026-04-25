@@ -3,7 +3,7 @@ import { Input } from "../../components/input";
 import { useState, type FormEvent } from "react";
 
 import { auth } from "../../services/firebaseConnections";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -21,14 +21,16 @@ export function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       navigate("/admin/social");
       console.log("Login realizado com sucesso!", userCredential.user);
-    } catch (error: any) {
-      console.error("Erro ao fazer login:", error.message);
+    } catch (error) {
+      const authError = error as AuthError;
 
-      if (error.code === "auth/invalid-credential") {
+      console.error("Erro ao fazer login:", authError.message);
+
+      if (authError.code === "auth/invalid-credential") {
         alert("E-mail ou senha inválidos.");
       }
 
-      if (error.code === "auth/too-many-requests") {
+      if (authError.code === "auth/too-many-requests") {
         alert("Muitas tentativas. Tente novamente mais tarde.");
       }
     }
