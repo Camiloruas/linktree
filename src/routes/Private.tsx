@@ -14,11 +14,17 @@ export function Private({ children }: PrivateProps) {
   useEffect(() => {
     const checkLogin = onAuthStateChanged(auth, (user: User | null) => {
       if (user) {
+        const useData = {
+          uid: user?.uid,
+          email: user?.email,
+        };
+        localStorage.setItem("@reactlinks", JSON.stringify(useData));
+        setLoading(false);
         setSigned(true);
       } else {
+        setLoading(false);
         setSigned(false);
       }
-      setLoading(false);
     });
 
     return () => checkLogin();

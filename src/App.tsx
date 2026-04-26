@@ -9,11 +9,20 @@ import { Private } from "./routes/Private";
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
   { path: "/login", element: <Login /> },
-  { path: "/networks", element: <Networks /> },
+  {
+    path: "/networks",
+    element: (
+      <Private>
+        <Networks />
+      </Private>
+    ),
+  },
   {
     path: "/admin/social",
     element: (
-      <Private><Admin /></Private>
+      <Private>
+        <Admin />
+      </Private>
     ),
   },
 ]);
