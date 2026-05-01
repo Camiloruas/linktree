@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/input";
 import { FiTrash } from "react-icons/fi";
@@ -18,6 +19,7 @@ export function Admin() {
   const [urlInput, setUrlInput] = useState("");
   const [textColorInput, setTextColorInput] = useState("#f1f1f1");
   const [backgroundColorInput, setBackgroundColorInput] = useState("#121212");
+  const [links, setLinks] = useState<LinkProps[]>([]);
 
   useEffect(() => {
     const linksRef = collection(db, "links");
@@ -27,19 +29,31 @@ export function Admin() {
       const lista = [] as LinkProps[];
 
       onSnapshot.forEach((doc) => {
-      lista.push()  
+        lista.push({
+          id: doc.id,
+          nome: doc.data().nome,
+          url: doc.data().url,
+          bg: doc.data().bg,
+          color: doc.data().color,
+        });
       });
+      
+      setLinks(lista);
     });
+
+    return () => {
+      unsub();
+    };
   }, []);
 
-  function handleRegister(e: FormEvent) {
+  async function handleRegister(e: FormEvent) {
     e.preventDefault();
     if (nomeInput === "" || urlInput === "") {
-      alert("Preecha todos os campos");
+      alert("Preencha todos os campos");
       return;
     }
     try {
-      addDoc(collection(db, "links"), {
+      await addDoc(collection(db, "links"), {
         nome: nomeInput,
         url: urlInput,
         bg: backgroundColorInput,
@@ -52,6 +66,11 @@ export function Admin() {
     } catch (error) {
       console.log("Erro ao cadastrar no Banco", error);
     }
+  }
+
+  async function handleDeleteLink(id: string) {
+    const docRef = doc(db, "links", id);
+    await deleteDoc(docRef);
   }
 
   return (
@@ -76,7 +95,7 @@ export function Admin() {
         />
         <section className="flex my-4 gap-5">
           <div className=" flex gap-2">
-            <label className=" text-white font-medium mt-2 mb-2">Fundo do Link</label>
+            <label className=" text-white font-medium mt-2 mb-2">Cor do texto</label>
             <input
               type="color"
               value={textColorInput}
@@ -117,20 +136,27 @@ export function Admin() {
         </button>
       </form>
       <h2 className="font-bold text-white mb-4 text-2xl">Meus Links</h2>
-      <article
-        className="flex items-center justify-between w-11/12 max-w-xl rouned py-3 px-2 mb-2"
-        style={{ backgroundColor: "#2563eb", color: "#fff" }}
-      >
-        <p>Canal do Youtube</p>
-        <div>
-          <button className="border border-dashed p-1 rounded ">
-            <FiTrash
-              size={18}
-              color="#fff"
-            />
-          </button>
-        </div>
-      </article>
+      {links.map((link) => (
+        <article
+          key={link.id}
+          className="relative flex items-center justify-center w-11/12 max-w-xl rounded py-3 px-2 mb-2"
+          style={{ backgroundColor: link.bg, color: link.color }}
+        >
+          <p className="flex-1 text-center">{link.nome}</p>
+          <div className="absolute right-2">
+            <button
+              type="button"
+              className="border border-dashed p-1 rounded"
+              onClick={() => handleDeleteLink(link.id)}
+            >
+              <FiTrash
+                size={18}
+                color="#fff"
+              />
+            </button>
+          </div>
+        </article>
+      ))}
     </div>
   );
 }
