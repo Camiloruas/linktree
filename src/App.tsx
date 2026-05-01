@@ -13,7 +13,7 @@ const router = createBrowserRouter(
   { path: "/login", element: <Login /> },
   { path: "/networks", element: <Private><Networks /></Private> },
   { path: "/admin", element: <Private><Admin /></Private> },
-  { path: "/admin/social",element: (<Private><Admin /></Private>)},
+  { path: "/admin/social",element: (<Private><Networks /></Private>)},
 ],
 );
 
