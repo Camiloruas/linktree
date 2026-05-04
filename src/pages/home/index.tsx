@@ -1,11 +1,40 @@
-import { Social } from "../../components/social/indesx";
-import { FaFacebook } from "react-icons/fa";
-import { SiBookstack } from "react-icons/si";
-import { SiInstagram } from "react-icons/si";
-import { FaWhatsapp } from "react-icons/fa";
-import { IoLogoGithub } from "react-icons/io";
+import { Social } from "../../components/social"
+import { FaFacebook, FaWhatsapp } from "react-icons/fa"
+import { SiBookstack, SiInstagram } from "react-icons/si"
+import { IoLogoGithub } from "react-icons/io"
+import { useEffect, useState } from "react"
 
+import { db } from "../../services/firebaseConnections"
+import { collection, query, orderBy, doc, getDocs, getDoc } from "firebase/firestore"
+
+interface LinkProps {
+  id: string
+  nome: string
+  url: string
+  bg: string
+  color: string
+}
+
+interface SocialLinksProps {
+  facebook: string
+  youtube: string
+  instagram: string
+}
 export function Home() {
+  const [links, setLinks] = useState<LinkProps[]>([])
+  const [socialLinks, setSocialLinks] = useState<SocialLinksProps>()
+
+  useEffect(() => {
+    function loadLinks() {
+      const linksRef = collection(db, "links")
+      const queryRef = query(linksRef, orderBy("created", "asc"))
+      getDocs(queryRef).then((snapshot) => {
+        const lista = [] as LinkProps[]
+        
+      })
+    }
+  }, [])
+
   return (
     <div className="flex flex-col w-full py-4 items-center justify-center">
       <h1 className="md:text-4xl text-3xl font-bold text-white mt-20 ">Página HOME</h1>
@@ -55,5 +84,5 @@ export function Home() {
         </footer>
       </main>
     </div>
-  );
+  )
 }
