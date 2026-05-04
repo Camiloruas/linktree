@@ -1,4 +1,5 @@
 {
   "printWidth": 200,
-  "singleAttributePerLine": true
+  "singleAttributePerLine": true,
+  "semi": false
 }
