@@ -1,33 +1,33 @@
-import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
-import { Header } from "../../components/Header";
-import { Input } from "../../components/input";
-import { FiTrash } from "react-icons/fi";
-import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
-import { db } from "../../services/firebaseConnections";
-import { getSocialKind, getSocialIcon } from "../../utils/socialUtils";
+import { useEffect, useState } from "react"
+import type { FormEvent } from "react"
+import { Header } from "../../components/Header"
+import { Input } from "../../components/input"
+import { FiTrash } from "react-icons/fi"
+import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore"
+import { db } from "../../services/firebaseConnections"
+import { getSocialKind, getSocialIcon } from "../../utils/socialUtils"
 
 interface LinkProps {
-  id: string;
-  nome: string;
-  url: string;
-  bg: string;
-  color: string;
+  id: string
+  nome: string
+  url: string
+  bg: string
+  color: string
 }
 
 export function Admin() {
-  const [nomeInput, setNomeInput] = useState("");
-  const [urlInput, setUrlInput] = useState("");
-  const [textColorInput, setTextColorInput] = useState("#f1f1f1");
-  const [backgroundColorInput, setBackgroundColorInput] = useState("#121212");
-  const [links, setLinks] = useState<LinkProps[]>([]);
+  const [nomeInput, setNomeInput] = useState("")
+  const [urlInput, setUrlInput] = useState("")
+  const [textColorInput, setTextColorInput] = useState("#f1f1f1")
+  const [backgroundColorInput, setBackgroundColorInput] = useState("#121212")
+  const [links, setLinks] = useState<LinkProps[]>([])
 
   useEffect(() => {
-    const linksRef = collection(db, "links");
-    const queryRef = query(linksRef, orderBy("created", "asc"));
+    const linksRef = collection(db, "links")
+    const queryRef = query(linksRef, orderBy("created", "asc"))
 
     const unsub = onSnapshot(queryRef, (onSnapshot) => {
-      const lista = [] as LinkProps[];
+      const lista = [] as LinkProps[]
 
       onSnapshot.forEach((doc) => {
         lista.push({
@@ -36,22 +36,22 @@ export function Admin() {
           url: doc.data().url,
           bg: doc.data().bg,
           color: doc.data().color,
-        });
-      });
-      
-      setLinks(lista);
-    });
+        })
+      })
+
+      setLinks(lista)
+    })
 
     return () => {
-      unsub();
-    };
-  }, []);
+      unsub()
+    }
+  }, [])
 
   async function handleRegister(e: FormEvent) {
-    e.preventDefault();
+    e.preventDefault()
     if (nomeInput === "" || urlInput === "") {
-      alert("Preencha todos os campos");
-      return;
+      alert("Preencha todos os campos")
+      return
     }
     try {
       await addDoc(collection(db, "links"), {
@@ -60,24 +60,23 @@ export function Admin() {
         bg: backgroundColorInput,
         color: textColorInput,
         created: new Date(),
-      });
-      setNomeInput("");
-      setUrlInput("");
-
+      })
+      setNomeInput("")
+      setUrlInput("")
     } catch (error) {
-      console.log("Erro ao cadastrar no Banco", error);
+      console.log("Erro ao cadastrar no Banco", error)
     }
   }
 
   async function handleDeleteLink(id: string) {
-    const docRef = doc(db, "links", id);
-    await deleteDoc(docRef);
+    const docRef = doc(db, "links", id)
+    await deleteDoc(docRef)
   }
 
   return (
     <div className="flex items-center flex-col min-h-screen pb-7 px-2">
       <Header />
-      
+
       <form
         className="flex flex-col mt-8 mb-3 w-full max-w-xl"
         onSubmit={handleRegister}
@@ -91,7 +90,7 @@ export function Admin() {
         />
         <label className="text-white font-medium mt-2 mb-2 ">URL do Link</label>
         <Input
-          type="url"
+          type="text"
           placeholder="Digite a URL"
           value={urlInput}
           onChange={(e) => setUrlInput(e.target.value)}
@@ -170,5 +169,5 @@ export function Admin() {
         ))}
       </div>
     </div>
-  );
+  )
 }

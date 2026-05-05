@@ -42,8 +42,11 @@ export function Home() {
 
   return (
     <div className="flex flex-col w-full py-4 items-center justify-center">
-      <h1 className="md:text-4xl text-3xl font-bold text-white mt-20 ">Página HOME</h1>
-      <span className="text-gray-50 mb-5 mt-6">Veja meus Links 👇</span>
+      <h1 className="md:text-5xl text-4xl font-bold text-white mt-20">
+        Dev
+        <span className="bg-gradient-to-r from-yellow-500 to-orange-400 bg-clip-text text-transparent">Link</span>
+      </h1>
+      <span className="text-gray-50 mb-5 mt-3 text-lg font-medium">Meus links e contatos 👇</span>
 
       <main className="flex flex-col w-11/12 max-w-xl text-center">
         {links.map((link) => (

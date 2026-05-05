@@ -18,9 +18,8 @@ export function Login() {
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
       navigate("/admin");
-
     } catch (error) {
       const authError = error as AuthError;
 
