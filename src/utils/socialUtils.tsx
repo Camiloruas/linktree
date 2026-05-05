@@ -2,18 +2,7 @@ import { FaFacebook, FaWhatsapp, FaLinkedin, FaTwitter, FaTelegramPlane } from "
 import { SiBookstack, SiInstagram, SiYoutube, SiTiktok, SiX } from "react-icons/si"
 import { IoLogoGithub } from "react-icons/io"
 
-export type SocialKind =
-  | "github"
-  | "instagram"
-  | "facebook"
-  | "youtube"
-  | "linkedin"
-  | "tiktok"
-  | "x"
-  | "twitter"
-  | "telegram"
-  | "whatsapp"
-  | "portfolio"
+export type SocialKind = "github" | "instagram" | "facebook" | "youtube" | "linkedin" | "tiktok" | "x" | "twitter" | "telegram" | "whatsapp" | "portfolio"
 
 export function normalize(value: string) {
   return value.trim().toLowerCase()
@@ -34,23 +23,100 @@ export function getSocialKind(urlValue: string, nomeValue: string): SocialKind |
   if (url.includes("t.me") || url.includes("telegram.me")) return "telegram"
   if (url.includes("wa.me") || url.includes("whatsapp.com")) return "whatsapp"
 
-  if (nome.includes("portfolio") || nome.includes("portfólio")) return "portfolio"
+  if (
+    nome.includes("portfolio") ||
+    nome.includes("portifolio") ||
+    nome.includes("portifólio") ||
+    nome.includes("portfólio") ||
+    nome.includes("cv") ||
+    nome.includes("curriculo") ||
+    nome.includes("currículo") ||
+    nome.includes("trabalho") ||
+    nome.includes("projeto")
+  )
+    return "portfolio"
 
   return null
 }
 
 export function getSocialIcon(kind: SocialKind | null, size = 35, color = "#fff") {
-  if (kind === "github") return <IoLogoGithub size={size} color={color} />
-  if (kind === "instagram") return <SiInstagram size={size} color={color} />
-  if (kind === "facebook") return <FaFacebook size={size} color={color} />
-  if (kind === "youtube") return <SiYoutube size={size} color={color} />
-  if (kind === "linkedin") return <FaLinkedin size={size} color={color} />
-  if (kind === "tiktok") return <SiTiktok size={size} color={color} />
-  if (kind === "x") return <SiX size={size} color={color} />
-  if (kind === "twitter") return <FaTwitter size={size} color={color} />
-  if (kind === "telegram") return <FaTelegramPlane size={size} color={color} />
-  if (kind === "whatsapp") return <FaWhatsapp size={size} color={color} />
-  if (kind === "portfolio") return <SiBookstack size={size} color={color} />
+  if (kind === "github")
+    return (
+      <IoLogoGithub
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "instagram")
+    return (
+      <SiInstagram
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "facebook")
+    return (
+      <FaFacebook
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "youtube")
+    return (
+      <SiYoutube
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "linkedin")
+    return (
+      <FaLinkedin
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "tiktok")
+    return (
+      <SiTiktok
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "x")
+    return (
+      <SiX
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "twitter")
+    return (
+      <FaTwitter
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "telegram")
+    return (
+      <FaTelegramPlane
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "whatsapp")
+    return (
+      <FaWhatsapp
+        size={size}
+        color={color}
+      />
+    )
+  if (kind === "portfolio")
+    return (
+      <SiBookstack
+        size={size}
+        color={color}
+      />
+    )
 
   return null
 }

@@ -63,7 +63,7 @@ export function Admin() {
       });
       setNomeInput("");
       setUrlInput("");
-      console.log("cadastrado com Sucesso");
+
     } catch (error) {
       console.log("Erro ao cadastrar no Banco", error);
     }
@@ -75,12 +75,14 @@ export function Admin() {
   }
 
   return (
-    <div className="flex  items-center flex-col min-h-screen pb-7 px-2">
+    <div className="flex items-center flex-col min-h-screen pb-7 px-2">
       <Header />
+      
       <form
-        className="flex flex-col mt-3 mb-3  w-full max-w-xl "
+        className="flex flex-col mt-8 mb-3 w-full max-w-xl"
         onSubmit={handleRegister}
       >
+        <h2 className="text-white font-bold text-xl mb-4">Cadastrar Novo Link</h2>
         <label className="text-white font-medium mt-2 mb-2 ">Nome do Link</label>
         <Input
           placeholder="Digite o nome do Link"
@@ -139,31 +141,34 @@ export function Admin() {
           Cadastrar
         </button>
       </form>
-      <h2 className="font-bold text-white mb-4 text-2xl">Meus Links</h2>
-      {links.map((link) => (
-        <article
-          key={link.id}
-          className="relative flex items-center justify-center w-11/12 max-w-xl rounded py-3 px-2 mb-2"
-          style={{ backgroundColor: link.bg, color: link.color }}
-        >
-          <div className="flex-1 flex items-center justify-center gap-2">
-            {getSocialIcon(getSocialKind(link.url, link.nome), 20, link.color)}
-            <p className="text-center">{link.nome}</p>
-          </div>
-          <div className="absolute right-2">
-            <button
-              type="button"
-              className="border border-dashed p-1 rounded"
-              onClick={() => handleDeleteLink(link.id)}
-            >
-              <FiTrash
-                size={18}
-                color="#fff"
-              />
-            </button>
-          </div>
-        </article>
-      ))}
+
+      <div className="w-full max-w-xl flex flex-col items-center justify-center">
+        <h2 className="font-bold text-white mb-4 text-2xl">Meus Links</h2>
+        {links.map((link) => (
+          <article
+            key={link.id}
+            className="relative flex items-center justify-center w-full rounded py-3 px-2 mb-2"
+            style={{ backgroundColor: link.bg, color: link.color }}
+          >
+            <div className="flex-1 flex items-center justify-center gap-2">
+              {getSocialIcon(getSocialKind(link.url, link.nome), 20, link.color)}
+              <p className="text-center">{link.nome}</p>
+            </div>
+            <div className="absolute right-2">
+              <button
+                type="button"
+                className="border border-dashed p-1 rounded"
+                onClick={() => handleDeleteLink(link.id)}
+              >
+                <FiTrash
+                  size={18}
+                  color="#fff"
+                />
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   );
 }

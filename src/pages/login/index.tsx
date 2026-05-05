@@ -19,12 +19,12 @@ export function Login() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      navigate("/admin/social");
-      console.log("Login realizado com sucesso!", userCredential.user);
+      navigate("/admin");
+
     } catch (error) {
       const authError = error as AuthError;
 
-      console.error("Erro ao fazer login:", authError.message);
+
 
       if (authError.code === "auth/invalid-credential") {
         alert("E-mail ou senha inválidos.");
