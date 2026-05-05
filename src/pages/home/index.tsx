@@ -1,12 +1,8 @@
+import { useEffect, useMemo, useState } from "react"
 import { Social } from "../../components/social"
-import { FaFacebook, FaWhatsapp } from "react-icons/fa"
-import { SiBookstack, SiInstagram } from "react-icons/si"
-import { IoLogoGithub } from "react-icons/io"
-import { useEffect, useState } from "react"
-
 import { db } from "../../services/firebaseConnections"
-import { collection, query, orderBy, doc, getDocs, getDoc } from "firebase/firestore"
-import { FacebookAuthProvider } from "firebase/auth/web-extension"
+import { collection, query, orderBy, getDocs, doc, getDoc } from "firebase/firestore"
+import { getSocialKind, getSocialIcon, type SocialKind } from "../../utils/socialUtils"
 
 interface LinkProps {
   id: string
@@ -16,21 +12,27 @@ interface LinkProps {
   color: string
 }
 
-interface SocialLinksProps {
-  facebook: string
-  youtube: string
-  instagram: string
+interface SocialLinks {
+  facebook?: string
+  instagram?: string
+  youtube?: string
+  whatsapp?: string
+  github?: string
+  portfolio?: string
 }
+
 export function Home() {
   const [links, setLinks] = useState<LinkProps[]>([])
-  const [socialLinks, setSocialLinks] = useState<SocialLinksProps>()
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>({})
 
   useEffect(() => {
     function loadLinks() {
       const linksRef = collection(db, "links")
       const queryRef = query(linksRef, orderBy("created", "asc"))
+
       getDocs(queryRef).then((snapshot) => {
         const lista = [] as LinkProps[]
+
         snapshot.forEach((doc) => {
           lista.push({
             id: doc.id,
@@ -40,6 +42,7 @@ export function Home() {
             color: doc.data().color,
           })
         })
+
         setLinks(lista)
       })
     }
@@ -48,21 +51,66 @@ export function Home() {
   }, [])
 
   useEffect(() => {
-    function loadLinksSocial() {
+    function loadSocialLinks() {
       const docRef = doc(db, "social", "link")
       getDoc(docRef).then((snapshot) => {
         if (snapshot.data() !== undefined) {
           setSocialLinks({
-            facebook: snapshot.data()?.Facebook,
+            facebook: snapshot.data()?.facebook,
             instagram: snapshot.data()?.instagram,
             youtube: snapshot.data()?.youtube,
+            whatsapp: snapshot.data()?.whatsapp,
+            github: snapshot.data()?.github,
+            portfolio: snapshot.data()?.portfolio,
           })
         }
       })
     }
 
-    loadLinksSocial()
+    loadSocialLinks()
   }, [])
+
+  const finalSocialLinks = useMemo(() => {
+    const result: Array<{ url: string; kind: SocialKind }> = []
+    const seen = new Set<SocialKind>()
+
+    // Prioritize dedicated social links
+    if (socialLinks.facebook) {
+      result.push({ url: socialLinks.facebook, kind: "facebook" })
+      seen.add("facebook")
+    }
+    if (socialLinks.instagram) {
+      result.push({ url: socialLinks.instagram, kind: "instagram" })
+      seen.add("instagram")
+    }
+    if (socialLinks.youtube) {
+      result.push({ url: socialLinks.youtube, kind: "youtube" })
+      seen.add("youtube")
+    }
+    if (socialLinks.whatsapp) {
+      result.push({ url: socialLinks.whatsapp, kind: "whatsapp" })
+      seen.add("whatsapp")
+    }
+    if (socialLinks.github) {
+      result.push({ url: socialLinks.github, kind: "github" })
+      seen.add("github")
+    }
+    if (socialLinks.portfolio) {
+      result.push({ url: socialLinks.portfolio, kind: "portfolio" })
+      seen.add("portfolio")
+    }
+
+    // Add derived links if not already present
+    links.forEach((link) => {
+      const kind = getSocialKind(link.url, link.nome)
+      if (kind && !seen.has(kind)) {
+        result.push({ url: link.url, kind })
+        seen.add(kind)
+      }
+    })
+
+    return result
+  }, [socialLinks, links])
 
   return (
     <div className="flex flex-col w-full py-4 items-center justify-center">
@@ -76,50 +124,26 @@ export function Home() {
             style={{ background: link.bg }}
             className="bg-white mb-4 w-full py-2 rounded-lg select-none transition-transform hover:scale-105 cursor-pointer"
           >
-            <a
-              href={link.url}
-              target="_blank"
-            >
-              <p className="text-base md:text-lg">{link.nome}</p>
+            <a href={link.url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2">
+              {getSocialIcon(getSocialKind(link.url, link.nome), 20, link.color)}
+              <p className="text-base md:text-lg" style={{ color: link.color }}>
+                {link.nome}
+              </p>
             </a>
           </section>
         ))}
 
-        {socialLinks && Object.keys(socialLinks).length > 0 && (
-          <footer className="flex   justify-center gap-3 my-4">
-            <Social url={socialLinks.facebook}>
-              <FaFacebook
-                size={35}
-                color="#fff"
-              />
-            </Social>
-            <Social url="https://camiloruas.dev/">
-              <SiBookstack
-                size={35}
-                color="#fff"
-              />
-            </Social>
-            <Social url={socialLinks.instagram}>
-              <SiInstagram
-                size={35}
-                color="#fff"
-              />
-            </Social>
-            <Social url={socialLinks.youtube}>
-              <FaWhatsapp
-                size={35}
-                color="#fff"
-              />
-            </Social>
-            <Social url="https://github.com/Camiloruas">
-              <IoLogoGithub
-                size={35}
-                color="#fff"
-              />
-            </Social>
+        {finalSocialLinks.length > 0 && (
+          <footer className="flex justify-center gap-3 my-4">
+            {finalSocialLinks.map((item, index) => (
+              <Social key={index} url={item.url}>
+                {getSocialIcon(item.kind)}
+              </Social>
+            ))}
           </footer>
         )}
       </main>
     </div>
   )
 }
+

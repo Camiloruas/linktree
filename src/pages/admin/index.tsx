@@ -5,6 +5,7 @@ import { Input } from "../../components/input";
 import { FiTrash } from "react-icons/fi";
 import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConnections";
+import { getSocialKind, getSocialIcon } from "../../utils/socialUtils";
 
 interface LinkProps {
   id: string;
@@ -115,15 +116,18 @@ export function Admin() {
           <div className="flex  items-center justify-start flex-col mb-7 p-1 border-gray-100/25 border rounded-md">
             <label className=" text-white font-medium mt-2 mb-2">Veja como está ficando:</label>
             <article
-              className=" w-11/12 max-w-lg flex flex-col items-center justify-between bg-zinc-900 rounded px-1 py-3"
+              className=" w-11/12 max-w-lg flex flex-col items-center justify-center bg-zinc-900 rounded px-1 py-3"
               style={{ marginBottom: 8, marginTop: 8, background: backgroundColorInput }}
             >
-              <p
-                className="font-medium"
-                style={{ color: textColorInput }}
-              >
-                {nomeInput}
-              </p>
+              <div className="flex items-center gap-2">
+                {getSocialIcon(getSocialKind(urlInput, nomeInput), 20, textColorInput)}
+                <p
+                  className="font-medium"
+                  style={{ color: textColorInput }}
+                >
+                  {nomeInput}
+                </p>
+              </div>
             </article>
           </div>
         )}
@@ -142,7 +146,10 @@ export function Admin() {
           className="relative flex items-center justify-center w-11/12 max-w-xl rounded py-3 px-2 mb-2"
           style={{ backgroundColor: link.bg, color: link.color }}
         >
-          <p className="flex-1 text-center">{link.nome}</p>
+          <div className="flex-1 flex items-center justify-center gap-2">
+            {getSocialIcon(getSocialKind(link.url, link.nome), 20, link.color)}
+            <p className="text-center">{link.nome}</p>
+          </div>
           <div className="absolute right-2">
             <button
               type="button"
