@@ -1,42 +1,74 @@
 # DevLink
 
-Projeto inspirado em uma página de links (Linktree), com área pública e uma área administrativa protegida por autenticação com Firebase.
+Aplicação web inspirada no Linktree para centralizar links profissionais em uma página pública, com painel administrativo protegido para gerenciamento.
 
-## Funcionalidades
+## O Que Este Projeto Demonstra
 
-- **Área Pública**: Visualização de todos os links cadastrados e ícones sociais automáticos.
-- **Autenticação**: Login seguro com Firebase Auth.
-- **Gerenciamento Unificado**: Cadastro, listagem e remoção de links em um único local.
-- **Identificação Inteligente**: Reconhecimento automático de redes sociais e portfólio/trabalho para exibição de ícones no rodapé.
-- **Customização**: Escolha de cores de fundo e texto para cada link.
+O DevLink resolve um problema comum de presença digital: reunir portfólio, redes sociais e canais de contato em um único link compartilhável.
 
-## Tecnologias
+Este projeto demonstra:
+- Construção de interface SPA com React + TypeScript.
+- Integração real com Firebase Authentication e Cloud Firestore.
+- Organização de rotas públicas e privadas com proteção de acesso.
+- Modelagem de dados simples e escalável para CRUD de links.
+- Experiência de usuário com feedback visual e identificação automática de tipo de link.
 
-- React
-- TypeScript
-- Vite
-- React Router
-- Firebase (Auth & Firestore)
-- Tailwind CSS
-- React Icons
+## Principais funcionalidades
 
-## Rotas
+- Página pública com listagem de links cadastrados.
+- Painel admin para criar, visualizar e remover links.
+- Personalização visual dos links (cor de fundo e cor do texto).
+- Geração automática de ícones sociais a partir da URL/nome do link.
+- Login com autenticação via Firebase.
 
-- `/` - Página inicial pública
-- `/login` - Autenticação do usuário
-- `/admin` - Gerenciamento de links (Protegida)
+## Stack utilizada
 
-## Como executar o projeto
+- `React 19`
+- `TypeScript`
+- `Vite`
+- `React Router DOM`
+- `Firebase Auth`
+- `Firebase Firestore`
+- `Tailwind CSS`
+- `React Icons`
+- `ESLint`
 
-1. **Instale as dependências**
-   ```bash
-   npm install
-   ```
+## Rotas da aplicação
 
-2. **Configure o Firebase**
-   Crie um projeto no console do Firebase e configure as credenciais em `src/services/firebaseConnections.ts`.
+- `/` - Home pública com links e ícones.
+- `/login` - Tela de autenticação.
+- `/admin` - Área administrativa protegida.
 
-3. **Execute o projeto**
-   ```bash
-   npm run dev
-   ```
+## Arquitetura resumida
+
+- Frontend em SPA com React e roteamento no cliente.
+- Persistência dos links em `Firestore` (coleção `links`).
+- Controle de acesso de páginas privadas por autenticação (`Firebase Auth`).
+- Configuração segura de ambiente com variáveis `VITE_*`.
+
+## Como rodar localmente
+
+1. Instale dependências:
+```bash
+npm install
+```
+
+2. Configure as variáveis de ambiente com base no `.env.example`:
+```env
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+3. Inicie em modo desenvolvimento:
+```bash
+npm run dev
+```
+
+4. Build de produção:
+```bash
+npm run build
+```
