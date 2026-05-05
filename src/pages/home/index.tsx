@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 
 import { db } from "../../services/firebaseConnections"
 import { collection, query, orderBy, doc, getDocs, getDoc } from "firebase/firestore"
+import { FacebookAuthProvider } from "firebase/auth/web-extension"
 
 interface LinkProps {
   id: string
@@ -30,9 +31,37 @@ export function Home() {
       const queryRef = query(linksRef, orderBy("created", "asc"))
       getDocs(queryRef).then((snapshot) => {
         const lista = [] as LinkProps[]
-        
+        snapshot.forEach((doc) => {
+          lista.push({
+            id: doc.id,
+            nome: doc.data().nome,
+            url: doc.data().url,
+            bg: doc.data().bg,
+            color: doc.data().color,
+          })
+        })
+        setLinks(lista)
       })
     }
+
+    loadLinks()
+  }, [])
+
+  useEffect(() => {
+    function loadLinksSocial() {
+      const docRef = doc(db, "social", "link")
+      getDoc(docRef).then((snapshot) => {
+        if (snapshot.data() !== undefined) {
+          setSocialLinks({
+            facebook: snapshot.data()?.Facebook,
+            instagram: snapshot.data()?.instagram,
+            youtube: snapshot.data()?.youtube,
+          })
+        }
+      })
+    }
+
+    loadLinksSocial()
   }, [])
 
   return (
@@ -41,47 +70,55 @@ export function Home() {
       <span className="text-gray-50 mb-5 mt-6">Veja meus Links 👇</span>
 
       <main className="flex flex-col w-11/12 max-w-xl text-center">
-        <section className="bg-white mb-4 w-full py-2 rounded-lg select-none transition-transform hover:scale-105 cursor-pointer">
-          <a
-            href="https://camiloruas.dev"
-            target="_blank"
+        {links.map((link) => (
+          <section
+            key={link.id}
+            style={{ background: link.bg }}
+            className="bg-white mb-4 w-full py-2 rounded-lg select-none transition-transform hover:scale-105 cursor-pointer"
           >
-            <p className="text-base md:text-lg">Portífólio</p>
-          </a>
-        </section>
+            <a
+              href={link.url}
+              target="_blank"
+            >
+              <p className="text-base md:text-lg">{link.nome}</p>
+            </a>
+          </section>
+        ))}
 
-        <footer className="flex   justify-center gap-3 my-4">
-          <Social url="https://www.facebook.com/camilo.ruas/">
-            <FaFacebook
-              size={35}
-              color="#fff"
-            />
-          </Social>
-          <Social url="https://camiloruas.dev/">
-            <SiBookstack
-              size={35}
-              color="#fff"
-            />
-          </Social>
-          <Social url="https://www.instagram.com/camiloruas/">
-            <SiInstagram
-              size={35}
-              color="#fff"
-            />
-          </Social>
-          <Social url="https://wa.me/5579998448030">
-            <FaWhatsapp
-              size={35}
-              color="#fff"
-            />
-          </Social>
-          <Social url="https://github.com/Camiloruas">
-            <IoLogoGithub
-              size={35}
-              color="#fff"
-            />
-          </Social>
-        </footer>
+        {socialLinks && Object.keys(socialLinks).length > 0 && (
+          <footer className="flex   justify-center gap-3 my-4">
+            <Social url={socialLinks.facebook}>
+              <FaFacebook
+                size={35}
+                color="#fff"
+              />
+            </Social>
+            <Social url="https://camiloruas.dev/">
+              <SiBookstack
+                size={35}
+                color="#fff"
+              />
+            </Social>
+            <Social url={socialLinks.instagram}>
+              <SiInstagram
+                size={35}
+                color="#fff"
+              />
+            </Social>
+            <Social url={socialLinks.youtube}>
+              <FaWhatsapp
+                size={35}
+                color="#fff"
+              />
+            </Social>
+            <Social url="https://github.com/Camiloruas">
+              <IoLogoGithub
+                size={35}
+                color="#fff"
+              />
+            </Social>
+          </footer>
+        )}
       </main>
     </div>
   )
