@@ -8,9 +8,18 @@ export function normalize(value: string) {
   return value.trim().toLowerCase()
 }
 
+function normalizeText(value: string) {
+  return normalize(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "")
+}
+
 export function getSocialKind(urlValue: string, nomeValue: string): SocialKind | null {
   const url = normalize(urlValue)
   const nome = normalize(nomeValue)
+  const nomeNormalized = normalizeText(nomeValue)
+  const urlNormalized = normalizeText(urlValue)
 
   if (url.includes("github.com")) return "github"
   if (url.includes("instagram.com")) return "instagram"
@@ -28,11 +37,18 @@ export function getSocialKind(urlValue: string, nomeValue: string): SocialKind |
     nome.includes("portifolio") ||
     nome.includes("portifólio") ||
     nome.includes("portfólio") ||
-    nome.includes("cv") ||
-    nome.includes("curriculo") ||
-    nome.includes("currículo") ||
-    nome.includes("trabalho") ||
-    nome.includes("projeto")
+    nomeNormalized.includes("portfolio") ||
+    nomeNormalized.includes("portifolio") ||
+    nomeNormalized.includes("portiflio") ||
+    nomeNormalized.includes("portif") ||
+    nomeNormalized.includes("cv") ||
+    nomeNormalized.includes("curriculo") ||
+    nomeNormalized.includes("trabalho") ||
+    nomeNormalized.includes("projeto") ||
+    url.includes("portfolio") ||
+    url.includes("portifolio") ||
+    urlNormalized.includes("portfolio") ||
+    urlNormalized.includes("portifolio")
   )
     return "portfolio"
 
