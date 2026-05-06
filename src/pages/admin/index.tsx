@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import type { FormEvent } from "react"
 import { Header } from "../../components/Header"
 import { Input } from "../../components/input"
-import { FiTrash } from "react-icons/fi"
-import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore"
+import { FiTrash, FiEdit } from "react-icons/fi"
+import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore"
 import { db } from "../../services/firebaseConnections"
 import { getSocialKind, getSocialIcon } from "../../utils/socialUtils"
 
@@ -21,6 +21,7 @@ export function Admin() {
   const [textColorInput, setTextColorInput] = useState("#f1f1f1")
   const [backgroundColorInput, setBackgroundColorInput] = useState("#121212")
   const [links, setLinks] = useState<LinkProps[]>([])
+  const [editId, setEditId] = useState<string | null>(null)
 
   useEffect(() => {
     const linksRef = collection(db, "links")
@@ -53,6 +54,23 @@ export function Admin() {
       alert("Preencha todos os campos")
       return
     }
+
+    if (editId) {
+      try {
+        const docRef = doc(db, "links", editId)
+        await updateDoc(docRef, {
+          nome: nomeInput,
+          url: urlInput,
+          bg: backgroundColorInput,
+          color: textColorInput,
+        })
+        handleCancelEdit()
+      } catch (error) {
+        console.log("Erro ao atualizar no Banco", error)
+      }
+      return
+    }
+
     try {
       await addDoc(collection(db, "links"), {
         nome: nomeInput,
@@ -73,6 +91,22 @@ export function Admin() {
     await deleteDoc(docRef)
   }
 
+  function handleEditLink(link: LinkProps) {
+    setEditId(link.id)
+    setNomeInput(link.nome)
+    setUrlInput(link.url)
+    setBackgroundColorInput(link.bg)
+    setTextColorInput(link.color)
+  }
+
+  function handleCancelEdit() {
+    setEditId(null)
+    setNomeInput("")
+    setUrlInput("")
+    setBackgroundColorInput("#121212")
+    setTextColorInput("#f1f1f1")
+  }
+
   return (
     <div className="flex items-center flex-col min-h-screen pb-7 px-2">
       <Header />
@@ -81,7 +115,10 @@ export function Admin() {
         className="flex flex-col mt-8 mb-3 w-full max-w-xl"
         onSubmit={handleRegister}
       >
-        <h2 className="text-white font-bold text-xl mb-4">Cadastrar Novo Link</h2>
+        <h2 className="text-white font-bold text-xl mb-4">
+          {editId ? "Editando Link" : "Cadastrar Novo Link"}
+        </h2>
+        
         <label className="text-white font-medium mt-2 mb-2 ">Nome do Link</label>
         <Input
           placeholder="Digite o nome do Link"
@@ -133,12 +170,24 @@ export function Admin() {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="mb-7 bg-blue-600 h-9 rounded-md text-white font-medium gap-4 flex justify-center items-center"
-        >
-          Cadastrar
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            className="flex-1 mb-7 bg-blue-600 h-9 rounded-md text-white font-medium gap-4 flex justify-center items-center"
+          >
+            {editId ? "Atualizar Link" : "Cadastrar"}
+          </button>
+
+          {editId && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="mb-7 bg-red-600 h-9 px-4 rounded-md text-white font-medium flex justify-center items-center"
+            >
+              Cancelar
+            </button>
+          )}
+        </div>
       </form>
 
       <div className="w-full max-w-xl flex flex-col items-center justify-center">
@@ -153,7 +202,17 @@ export function Admin() {
               {getSocialIcon(getSocialKind(link.url, link.nome), 20, link.color)}
               <p className="text-center">{link.nome}</p>
             </div>
-            <div className="absolute right-2">
+            <div className="absolute right-2 flex gap-2">
+              <button
+                type="button"
+                className="border border-dashed p-1 rounded"
+                onClick={() => handleEditLink(link)}
+              >
+                <FiEdit
+                  size={18}
+                  color="#fff"
+                />
+              </button>
               <button
                 type="button"
                 className="border border-dashed p-1 rounded"
