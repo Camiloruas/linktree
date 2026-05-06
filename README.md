@@ -93,3 +93,22 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## Testes realizados
+
+Última validação executada localmente:
+
+1. Lint do projeto
+```bash
+npm run lint
+```
+Resultado: `OK` (sem erros de ESLint).
+
+2. Build de produção (TypeScript + Vite)
+```bash
+npm run build
+```
+Resultado: `OK` (build gerado com sucesso).
+
+Observação técnica:
+- O Vite sinalizou chunks maiores que `500 kB` após minificação, sugerindo code splitting com `dynamic import()`. Isso não bloqueia o deploy, mas é um ponto de otimização futura de performance.
