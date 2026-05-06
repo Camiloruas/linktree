@@ -45,20 +45,20 @@ Este projeto demonstra:
 
 ## Screenshots
 
-### Home (visualização pública)
-Exibe os links já cadastrados e os ícones das redes sociais para facilitar o acesso rápido dos visitantes.
+### Login (acesso protegido)
+Tela de autenticação. Somente usuários logados conseguem acessar a área administrativa e realizar alterações.
 
-![Tela Home](docs/images/Home.png)
+![Tela Login](docs/images/Login.png)
 
 ### Cadastro de links (área administrativa)
 Tela onde a pessoa logada cadastra links e personaliza cor do botão e cor do texto para montar sua vitrine.
 
 ![Tela Cadastro de Links](docs/images/Cadastrar%20Links.png)
 
-### Login (acesso protegido)
-Tela de autenticação. Somente usuários logados conseguem acessar a área administrativa e realizar alterações.
+### Home (visualização pública)
+Exibe os links já cadastrados e os ícones das redes sociais para facilitar o acesso rápido dos visitantes.
 
-![Tela Login](docs/images/Login.png)
+![Tela Home](docs/images/Home.png)
 
 ## Arquitetura resumida
 
