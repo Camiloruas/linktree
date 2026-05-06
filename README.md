@@ -2,6 +2,10 @@
 
 Aplicação web inspirada no Linktree para centralizar links profissionais em uma página pública, com painel administrativo protegido para gerenciamento.
 
+## Demo
+
+- Produção (Vercel): https://linktree-eosin-one.vercel.app/
+
 ## O Que Este Projeto Demonstra
 
 O DevLink resolve um problema comum de presença digital: reunir portfólio, redes sociais e canais de contato em um único link compartilhável.
@@ -38,6 +42,23 @@ Este projeto demonstra:
 - `/` - Home pública com links e ícones.
 - `/login` - Tela de autenticação.
 - `/admin` - Área administrativa protegida.
+
+## Screenshots
+
+### Home (visualização pública)
+Exibe os links já cadastrados e os ícones das redes sociais para facilitar o acesso rápido dos visitantes.
+
+![Tela Home](docs/images/Home.png)
+
+### Cadastro de links (área administrativa)
+Tela onde a pessoa logada cadastra links e personaliza cor do botão e cor do texto para montar sua vitrine.
+
+![Tela Cadastro de Links](docs/images/Cadastrar%20Links.png)
+
+### Login (acesso protegido)
+Tela de autenticação. Somente usuários logados conseguem acessar a área administrativa e realizar alterações.
+
+![Tela Login](docs/images/Login.png)
 
 ## Arquitetura resumida
 
